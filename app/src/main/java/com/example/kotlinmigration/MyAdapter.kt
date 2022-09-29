@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.example.kotlinmigration.API.PostsJsonItem
 
-class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-
-    private var myList = listOf<PostsJsonItem>()
+class MyAdapter(
+    private var myList : List<PostsJsonItem>
+) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
