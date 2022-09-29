@@ -33,22 +33,23 @@ class MainActivity : AppCompatActivity() {
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ServiceAPI::class.java)
 
-        val troll = retrofit.getPosts()
-        troll.enqueue(object: Callback<PostsJsonItem>{
-            override fun onResponse(call: Call<PostsJsonItem>, response: Response<PostsJsonItem>) {
+
+        val serviceApi = retrofit.create(ServiceAPI::class.java)
+
+        val call = serviceApi.getPosts()
+        call.enqueue(object: Callback<List<PostsJsonItem>>{
+            override fun onResponse(call: Call<List<PostsJsonItem>>, response: Response<List<PostsJsonItem>>)
+            {
                 if(!response.isSuccessful){ return }
 
-                list = MyAdapter(list,applicationContext)
-
+                recyclerView.adapter = MyAdapter(response.body()!!)
             }
 
-            override fun onFailure(call: Call<PostsJsonItem>, t: Throwable) {
+            override fun onFailure(call: Call<List<PostsJsonItem>>, t: Throwable)
+            {
                 Toast.makeText(applicationContext,"Failure",Toast.LENGTH_SHORT).show()
-
             }
-
         })
 
     }
