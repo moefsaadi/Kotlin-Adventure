@@ -32,10 +32,10 @@ class MyAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         //Update RecyclerView
-        holder.textViewUserId.text = myList[position].userId.toString()
-        holder.textViewId.text = myList[position].id.toString()
-        holder.textViewTitle.text = myList[position].title
-        holder.textViewBody.text = myList[position].body
+        holder.textViewUserId.text ="userID: "+  myList[position].userId.toString() + "\n"
+        holder.textViewId.text = "ID: " + myList[position].id.toString() + "\n"
+        holder.textViewTitle.text = "Title: " + myList[position].title + "\n"
+        holder.textViewBody.text = "Body: " + myList[position].body
 
         //Alternate colors of each block
         if(position %2 == 1){holder.itemView.setBackgroundColor(Color.GRAY)}
