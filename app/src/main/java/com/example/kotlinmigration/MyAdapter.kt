@@ -1,11 +1,13 @@
 package com.example.kotlinmigration
 
+import android.content.res.Resources
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat.getDrawable
 import com.example.kotlinmigration.API.PostsJsonItem
 
 class MyAdapter(
@@ -38,11 +40,10 @@ class MyAdapter(
         holder.textViewBody.text = "Body: " + myList[position].body
 
         //Alternate colors of each block
-        if(position %2 == 1){holder.itemView.setBackgroundColor(Color.GRAY)}
-        else{holder.itemView.setBackgroundColor(Color.BLACK)}
+        if(position %2 == 1)holder.itemView.setBackgroundResource(R.drawable.background1)
+        else{holder.itemView.setBackgroundResource(R.drawable.background2)}
 
     }
-
 
 }
 

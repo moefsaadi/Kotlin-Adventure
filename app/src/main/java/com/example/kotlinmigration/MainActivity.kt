@@ -32,15 +32,16 @@ class MainActivity : AppCompatActivity() {
         var list = listOf<PostsJsonItem>()
 
 
-
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         myProgress.visibility = View.INVISIBLE
 
+        //Button click runs API call below
         myButton.setOnClickListener {
             myButton.visibility = View.INVISIBLE
             myProgress.visibility = View.VISIBLE
+
 
 
             val retrofit = Retrofit.Builder()
@@ -73,4 +74,5 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
 }
