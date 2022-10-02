@@ -2,8 +2,12 @@ package com.example.kotlinmigration
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinmigration.API.PostsJsonItem
@@ -24,13 +28,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val myButton: Button = findViewById(R.id.button)
+        val myProgress : ProgressBar = findViewById(R.id.progress)
         var list = listOf<PostsJsonItem>()
 
 
 
+        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        myProgress.visibility = View.INVISIBLE
+
         myButton.setOnClickListener {
-            val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-            recyclerView.layoutManager = LinearLayoutManager(this)
+            myButton.visibility = View.INVISIBLE
+            myProgress.visibility = View.VISIBLE
 
 
             val retrofit = Retrofit.Builder()
@@ -50,6 +60,8 @@ class MainActivity : AppCompatActivity() {
                     if (!response.isSuccessful) {
                         return
                     }
+
+                    myProgress.visibility = View.INVISIBLE
 
                     recyclerView.adapter = MyAdapter(response.body()!!)
                 }
