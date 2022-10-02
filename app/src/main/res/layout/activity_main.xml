@@ -10,7 +10,7 @@
         android:id="@+id/mainTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="40dp"
         android:text="JSONPlaceholder REST API"
         android:textSize="32sp"
         android:textColor="@color/black"
@@ -23,16 +23,18 @@
         android:id="@+id/img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="320dp"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/img"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="60dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/star_big_on" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="420dp"
+        android:layout_marginTop="460dp"
         android:text="API Call"
         android:textColor="@color/white"
         android:background="@color/black"
