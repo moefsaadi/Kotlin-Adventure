@@ -40,8 +40,8 @@ class MyAdapter(
         holder.textViewBody.text = "Body: " + myList[position].body
 
         //Alternate colors of each block
-        if(position %2 == 1)holder.itemView.setBackgroundResource(R.drawable.background1)
-        else{holder.itemView.setBackgroundResource(R.drawable.background2)}
+        if(position %2 == 1) holder.itemView.setBackgroundResource(R.drawable.background1)
+        else holder.itemView.setBackgroundResource(R.drawable.background2)
 
     }
 

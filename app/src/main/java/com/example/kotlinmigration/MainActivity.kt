@@ -3,9 +3,7 @@ package com.example.kotlinmigration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +27,9 @@ class MainActivity : AppCompatActivity() {
 
         val myButton: Button = findViewById(R.id.button)
         val myProgress : ProgressBar = findViewById(R.id.progress)
+        val myTitle : TextView = findViewById(R.id.mainTitle)
+        val myImg : ImageView = findViewById(R.id.img)
+        val myFooter : TextView = findViewById(R.id.developed)
         var list = listOf<PostsJsonItem>()
 
 
@@ -41,6 +42,9 @@ class MainActivity : AppCompatActivity() {
         myButton.setOnClickListener {
             myButton.visibility = View.INVISIBLE
             myProgress.visibility = View.VISIBLE
+            myTitle.visibility = View.INVISIBLE
+            myImg.visibility = View.INVISIBLE
+            myFooter.visibility = View.INVISIBLE
 
 
 
