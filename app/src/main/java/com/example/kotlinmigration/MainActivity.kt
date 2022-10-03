@@ -4,15 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinmigration.API.PostsJsonItem
 import com.example.kotlinmigration.API.ServiceAPI
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -30,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         val myTitle : TextView = findViewById(R.id.mainTitle)
         val myImg : ImageView = findViewById(R.id.img)
         val myFooter : TextView = findViewById(R.id.developed)
-        var list = listOf<PostsJsonItem>()
 
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
