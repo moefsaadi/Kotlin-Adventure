@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinmigration.API.PostsJsonItem
 import com.example.kotlinmigration.API.ServiceAPI
+import com.example.kotlinmigration.viewmodels.MainViewModel
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -15,6 +17,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
 class MainActivity : AppCompatActivity() {
+
+    private val viewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         val myTitle : TextView = findViewById(R.id.mainTitle)
         val myImg : ImageView = findViewById(R.id.img)
         val myFooter : TextView = findViewById(R.id.developed)
+
 
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
