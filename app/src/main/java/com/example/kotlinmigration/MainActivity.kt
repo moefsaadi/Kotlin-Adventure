@@ -5,34 +5,36 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kotlinmigration.API.PostsJsonItem
-import com.example.kotlinmigration.API.ServiceAPI
+import com.example.kotlinmigration.models.API.PostsJsonItem
+import com.example.kotlinmigration.models.API.ServiceAPI
 import com.example.kotlinmigration.viewmodels.MainViewModel
+import kotlinx.coroutines.launch
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-const val BASE_URL = "https://jsonplaceholder.typicode.com/"
+//const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
 class MainActivity : AppCompatActivity() {
 
     private val viewModel : MainViewModel by viewModels()
+    val myProgress : ProgressBar = findViewById(R.id.progress)
+    val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val myButton: Button = findViewById(R.id.button)
-        val myProgress : ProgressBar = findViewById(R.id.progress)
+     //   val myProgress : ProgressBar = findViewById(R.id.progress)
         val myTitle : TextView = findViewById(R.id.mainTitle)
         val myImg : ImageView = findViewById(R.id.img)
         val myFooter : TextView = findViewById(R.id.developed)
-
-
-
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+        
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         myProgress.visibility = View.INVISIBLE
@@ -45,37 +47,34 @@ class MainActivity : AppCompatActivity() {
             myImg.visibility = View.INVISIBLE
             myFooter.visibility = View.INVISIBLE
 
-
-
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-
-            val serviceApi = retrofit.create(ServiceAPI::class.java)
-
-            val call = serviceApi.getPosts()
-            call.enqueue(object : Callback<List<PostsJsonItem>> {
-                override fun onResponse(
-                    call: Call<List<PostsJsonItem>>,
-                    response: Response<List<PostsJsonItem>>
-                ) {
-                    if (!response.isSuccessful) {
-                        return
-                    }
-
-                    myProgress.visibility = View.INVISIBLE
-
-                    recyclerView.adapter = MyAdapter(response.body()!!)
-                }
-
-                override fun onFailure(call: Call<List<PostsJsonItem>>, t: Throwable) {
-                    Toast.makeText(applicationContext, "Failure", Toast.LENGTH_SHORT).show()
-                }
-            })
-
+            viewModel.initRetrofit()
         }
     }
 
+    fun observeRetrofitState()
+    {
+        lifecycleScope.launch {
+            viewModel.retrofitState.observe(this@MainActivity){
+                when(it)
+                {
+                    MainViewModel.RetrofitStates.IDLE -> {
+
+                    }
+                    MainViewModel.RetrofitStates.RUNNING -> {
+
+                    }
+                    MainViewModel.RetrofitStates.SUCCESSFUL -> {
+                        if (viewModel.retrofitResponse != null)
+                        {
+                            myProgress.visibility = View.INVISIBLE
+                            recyclerView.adapter = MyAdapter(viewModel.retrofitResponse!!)
+                        }
+                    }
+                    MainViewModel.RetrofitStates.FAILED -> {
+                        Toast.makeText(applicationContext, "Failure", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
 }

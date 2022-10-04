@@ -1,4 +1,4 @@
-package com.example.kotlinmigration.API
+package com.example.kotlinmigration.models.API
 
 data class PostsJsonItem(
     val body: String,
