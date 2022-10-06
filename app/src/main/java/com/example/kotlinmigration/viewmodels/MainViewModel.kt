@@ -1,10 +1,14 @@
 package com.example.kotlinmigration.viewmodels
 
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.kotlinmigration.models.API.PostsJsonItem
 import com.example.kotlinmigration.models.API.ServiceAPI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,46 +19,49 @@ const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
 class MainViewModel: ViewModel() {
 
-    enum class RetrofitStates {
-        IDLE, RUNNING, SUCCESSFUL, FAILED
+    sealed class RetrofitEvent{
+        object Idle: RetrofitEvent()
+        object Running: RetrofitEvent()
+        data class Successful(val response: List<PostsJsonItem>?): RetrofitEvent()
+        data class Failed(val msg: String?) :RetrofitEvent()
     }
 
-
-    var retrofitState = MutableLiveData(RetrofitStates.IDLE)
-    var retrofitResponse : List<PostsJsonItem>? = null
+    private val _retrofitState = MutableStateFlow<RetrofitEvent>(RetrofitEvent.Idle)
+    val retrofitState: StateFlow<RetrofitEvent> = _retrofitState
 
 
     fun initRetrofit() {
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        viewModelScope.launch (Dispatchers.IO) {
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
-        val serviceApi = retrofit.create(ServiceAPI::class.java)
+            val serviceApi = retrofit.create(ServiceAPI::class.java)
 
-        val call = serviceApi.getPosts()
+            val call = serviceApi.getPosts()
 
-        retrofitState.postValue(RetrofitStates.RUNNING)
+            _retrofitState.emit(RetrofitEvent.Running)
 
-        call.enqueue(object : Callback<List<PostsJsonItem>> {
-            override fun onResponse(
-                call: Call<List<PostsJsonItem>>,
-                response: Response<List<PostsJsonItem>>
-            ) {
-                //still need to set the state to `successful` here, and `failed` somewhere else..
-                if (!response.isSuccessful) {
-                    return
+            call.enqueue(object : Callback<List<PostsJsonItem>> {
+                override fun onResponse(
+                    call: Call<List<PostsJsonItem>>,
+                    response: Response<List<PostsJsonItem>>
+                ) {
+                    if (!response.isSuccessful) {
+                        val codeStr = response.code().toString()
+                        _retrofitState.tryEmit(RetrofitEvent.Failed(codeStr))
+                        return
+                    }
+
+                    _retrofitState.tryEmit(RetrofitEvent.Successful(response.body()))
                 }
 
-                retrofitResponse = response.body()
-
-            }
-
-            override fun onFailure(call: Call<List<PostsJsonItem>>, t: Throwable) {
-
-            }
-        })
-
+                override fun onFailure(call: Call<List<PostsJsonItem>>, t: Throwable) {
+                    _retrofitState.tryEmit(RetrofitEvent.Failed(t.message))
+                }
+            })
+        }
     }
 }
