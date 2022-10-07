@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel : MainViewModel by viewModels()
     private var myProgress : ProgressBar? = null
-    private var recyclerView: RecyclerView? = null
+    private var recyclerView : RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +46,11 @@ class MainActivity : AppCompatActivity() {
             myFooter.visibility = View.INVISIBLE
 
             viewModel.initRetrofit()
+            observeRetrofitState()
         }
     }
 
-    fun observeRetrofitState() {
-
-
+    private fun observeRetrofitState() {
         lifecycleScope.launch {
             viewModel.retrofitState.collect{
                 when(it)
