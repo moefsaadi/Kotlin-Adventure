@@ -1,8 +1,13 @@
 package com.example.kotlinmigration.viewmodels
 
 
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kotlinmigration.database.PostRepository
+import com.example.kotlinmigration.database.Postdb
 import com.example.kotlinmigration.models.API.PostsJsonItem
 import com.example.kotlinmigration.models.API.ServiceAPI
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +22,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
-class MainViewModel: ViewModel() {
+class MainViewModel(application: Application): ViewModel() {
+
+    private val readAllData: LiveData<List<PostsJsonItem>>
+    private val repository: PostRepository
+
+    init {
+        val postDao = Postdb.getDatabase(application).postDao()
+        repository = PostRepository(postDao)
+        readAllData = repository.readAllData
+
+    }
 
     sealed class RetrofitEvent{
         object Idle: RetrofitEvent()
@@ -62,6 +77,12 @@ class MainViewModel: ViewModel() {
                     _retrofitState.tryEmit(RetrofitEvent.Failed(t.message))
                 }
             })
+        }
+    }
+
+    fun addPost(postdb: Postdb){
+        viewModelScope.launch (Dispatchers.IO) {
+            repository.addPost(postdb)
         }
     }
 }
