@@ -4,73 +4,72 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kotlinmigration.API.PostsJsonItem
-import com.example.kotlinmigration.API.ServiceAPI
+import com.example.kotlinmigration.models.API.PostsJsonItem
+import com.example.kotlinmigration.models.API.ServiceAPI
+import com.example.kotlinmigration.viewmodels.MainViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
-
-const val BASE_URL = "https://jsonplaceholder.typicode.com/"
-
 class MainActivity : AppCompatActivity() {
+
+    private val viewModel : MainViewModel by viewModels()
+    private var myProgress : ProgressBar? = null
+    private var recyclerView : RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val myButton: Button = findViewById(R.id.button)
-        val myProgress : ProgressBar = findViewById(R.id.progress)
         val myTitle : TextView = findViewById(R.id.mainTitle)
         val myImg : ImageView = findViewById(R.id.img)
         val myFooter : TextView = findViewById(R.id.developed)
 
+        myProgress = findViewById(R.id.progress)
+        recyclerView = findViewById(R.id.recyclerView)
 
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        myProgress.visibility = View.INVISIBLE
+        recyclerView?.layoutManager = LinearLayoutManager(this)
+        myProgress?.visibility = View.INVISIBLE
 
         //Button click runs API call below
         myButton.setOnClickListener {
             myButton.visibility = View.INVISIBLE
-            myProgress.visibility = View.VISIBLE
+            myProgress?.visibility = View.VISIBLE
             myTitle.visibility = View.INVISIBLE
             myImg.visibility = View.INVISIBLE
             myFooter.visibility = View.INVISIBLE
 
-
-
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-
-            val serviceApi = retrofit.create(ServiceAPI::class.java)
-
-            val call = serviceApi.getPosts()
-            call.enqueue(object : Callback<List<PostsJsonItem>> {
-                override fun onResponse(
-                    call: Call<List<PostsJsonItem>>,
-                    response: Response<List<PostsJsonItem>>
-                ) {
-                    if (!response.isSuccessful) {
-                        return
-                    }
-
-                    myProgress.visibility = View.INVISIBLE
-
-                    recyclerView.adapter = MyAdapter(response.body()!!)
-                }
-
-                override fun onFailure(call: Call<List<PostsJsonItem>>, t: Throwable) {
-                    Toast.makeText(applicationContext, "Failure", Toast.LENGTH_SHORT).show()
-                }
-            })
-
+            viewModel.initRetrofit()
+            observeRetrofitState()
         }
     }
 
+    private fun observeRetrofitState() {
+        lifecycleScope.launch {
+            viewModel.retrofitState.collect{
+                when(it)
+                {
+                    MainViewModel.RetrofitEvent.Idle -> {}
+                    MainViewModel.RetrofitEvent.Running -> {}
+                    is MainViewModel.RetrofitEvent.Successful -> {
+                        if(it.response != null)
+                        {
+                            myProgress?.visibility = View.INVISIBLE
+                            recyclerView?.adapter = MyAdapter(it.response)
+                        }
+                    }
+                    is MainViewModel.RetrofitEvent.Failed -> {
+                        val text = "Failure: ${it.msg}"
+                        Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
 }

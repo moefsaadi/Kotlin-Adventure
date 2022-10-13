@@ -1,14 +1,11 @@
 package com.example.kotlinmigration
 
-import android.content.res.Resources
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat.getDrawable
-import com.example.kotlinmigration.API.PostsJsonItem
+import com.example.kotlinmigration.models.API.PostsJsonItem
 
 class MyAdapter(
     private var myList : List<PostsJsonItem>

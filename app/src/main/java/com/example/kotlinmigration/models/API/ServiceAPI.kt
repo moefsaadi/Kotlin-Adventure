@@ -1,4 +1,4 @@
-package com.example.kotlinmigration.API
+package com.example.kotlinmigration.models.API
 
 import retrofit2.Call
 import retrofit2.http.GET

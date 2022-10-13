@@ -60,4 +60,9 @@ dependencies {
     //recyclerview
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
+    //lifecycle
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.fragment:fragment-ktx:1.5.3'
+
 }
