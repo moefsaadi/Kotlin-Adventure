@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kotlinmigration.database.dto.PostDto
+import com.example.kotlinmigration.databinding.ActivityMainBinding
 import com.example.kotlinmigration.models.API.PostsJsonItem
 import com.example.kotlinmigration.models.API.ServiceAPI
 import com.example.kotlinmigration.viewmodels.MainViewModel
@@ -18,32 +20,24 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
-    private var myProgress : ProgressBar? = null
-    private var recyclerView : RecyclerView? = null
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val myButton: Button = findViewById(R.id.button)
-        val myTitle : TextView = findViewById(R.id.mainTitle)
-        val myImg : ImageView = findViewById(R.id.img)
-        val myFooter : TextView = findViewById(R.id.developed)
-
-        myProgress = findViewById(R.id.progress)
-        recyclerView = findViewById(R.id.recyclerView)
-
-        recyclerView?.layoutManager = LinearLayoutManager(this)
-        myProgress?.visibility = View.INVISIBLE
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.progress.visibility = View.INVISIBLE
 
         //Button click runs API call below
-        myButton.setOnClickListener {
-            myButton.visibility = View.INVISIBLE
-            myProgress?.visibility = View.VISIBLE
-            myTitle.visibility = View.INVISIBLE
-            myImg.visibility = View.INVISIBLE
-            myFooter.visibility = View.INVISIBLE
+        binding.button.setOnClickListener {
+            binding.button.visibility = View.INVISIBLE
+            binding.progress.visibility = View.VISIBLE
+            binding.mainTitle.visibility = View.INVISIBLE
+            binding.img.visibility = View.INVISIBLE
+            binding.developed.visibility = View.INVISIBLE
 
             viewModel.initRetrofit()
             observeRetrofitState()
@@ -60,8 +54,8 @@ class MainActivity : AppCompatActivity() {
                     is MainViewModel.RetrofitEvent.Successful -> {
                         if(it.response != null)
                         {
-                            myProgress?.visibility = View.INVISIBLE
-                            recyclerView?.adapter = MyAdapter(it.response)
+                            binding.progress.visibility = View.INVISIBLE
+                            binding.recyclerView.adapter = MyAdapter(it.response)
                         }
                     }
                     is MainViewModel.RetrofitEvent.Failed -> {

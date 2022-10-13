@@ -91,7 +91,7 @@ class MainViewModel: ViewModel() {
 
         //UNRELATED TO THIS FN
         //we need some way to delete PostDtos from DB
-        
+
         //we're gonna need a second function called, readFromDB, that mainActivity can call like
         //viewmodel.readFromDB, this may need to return a flow
 
