@@ -28,6 +28,8 @@ class App : Application() {
             Postdb.DATABASE_NAME
         ).build()
 
+        //add retrofit here and follow the pattern
+
         super.onCreate()
     }
 }
