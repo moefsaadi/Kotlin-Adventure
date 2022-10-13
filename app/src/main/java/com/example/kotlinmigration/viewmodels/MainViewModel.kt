@@ -5,7 +5,6 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kotlinmigration.database.repository.PostRepository
 import com.example.kotlinmigration.database.Postdb
 import com.example.kotlinmigration.database.dto.PostDto
 import com.example.kotlinmigration.models.API.PostsJsonItem
@@ -13,6 +12,7 @@ import com.example.kotlinmigration.models.API.ServiceAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,17 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
-class MainViewModel(): ViewModel() {
-
-//    private val readAllData: LiveData<List<PostsJsonItem>>
-//    private val repository: PostRepository
-//
-//    init {
-//        val postDao = Postdb.getDatabase(application).postDao()
-//        repository = PostRepository(postDao)
-//        readAllData = repository.readAllData
-//
-//    }
+class MainViewModel: ViewModel() {
 
     sealed class RetrofitEvent{
         object Idle: RetrofitEvent()
@@ -69,7 +59,6 @@ class MainViewModel(): ViewModel() {
                         _retrofitState.tryEmit(RetrofitEvent.Failed(codeStr))
                         return
                     }
-
                     _retrofitState.tryEmit(RetrofitEvent.Successful(response.body()))
                 }
 
@@ -77,19 +66,35 @@ class MainViewModel(): ViewModel() {
                     _retrofitState.tryEmit(RetrofitEvent.Failed(t.message))
                 }
             })
-
-           // insertDataToDatabase()
         }
     }
 
-//    fun addPost(postdb: Postdb){
-//        viewModelScope.launch (Dispatchers.IO) {
-//            repository.addPost(postdb)
-//        }
-//    }
-
     private fun insertDataToDatabase(){
 
-      //  val postsEntered = PostDto(Body, ID, UserID, Title)
+        //dont forget to wrap this in VMScope on IO
+        //collect from retrofitState
+        //when successful, take it.response: List<PostsJsonItem>?
+        //convert to List<PostDto>
+        /*
+                  for(item in it.response)
+                            {
+                                PostDto(
+                                    Body = item.body,
+                                    ID = item.id
+                                )
+
+                            }
+         */
+        //call PostDao.add with that list
+        //ignore other states
+
+
+        //UNRELATED TO THIS FN
+        //we need some way to delete PostDtos from DB
+        
+        //we're gonna need a second function called, readFromDB, that mainActivity can call like
+        //viewmodel.readFromDB, this may need to return a flow
+
+
     }
 }
