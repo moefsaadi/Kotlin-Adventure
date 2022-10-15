@@ -36,7 +36,7 @@ class App : Application() {
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        
+
 
         super.onCreate()
     }

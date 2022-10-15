@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.kotlinmigration.app.App
 import com.example.kotlinmigration.app.App.Companion.retrofit
 import com.example.kotlinmigration.database.Postdb
+import com.example.kotlinmigration.database.dao.PostDao
 import com.example.kotlinmigration.database.dto.PostDto
 import com.example.kotlinmigration.models.API.PostsJsonItem
 import com.example.kotlinmigration.models.API.ServiceAPI
@@ -69,7 +70,38 @@ class MainViewModel: ViewModel() {
 
     private fun insertDataToDatabase(){
 
-        //dont forget to wrap this in VMScope on IO
+        viewModelScope.launch(Dispatchers.IO){
+            var dtoList: List<PostDto>
+            _retrofitState.collect(){
+                when(it)
+                {
+
+                    is RetrofitEvent.Successful -> {
+                        if(it.response != null){
+                            for (item in it.response)
+                            {
+                             dtoList = listOf(PostDto(
+                                    Body = item.body,
+                                    ID = item.id,
+                                    UserID = item.userId,
+                                    Title = item.title
+                                ))
+                            }
+                        }
+                    }
+                    is RetrofitEvent.Failed -> {}
+                    RetrofitEvent.Idle -> {}
+                    RetrofitEvent.Running -> {}
+                }
+
+            }
+
+           PostDao.addPost(dtoList) //unreachable code? tf? also, why is it not recognizing .addPost??, also did i convert to List<PostDto> correct above?
+
+
+
+        }
+
         //collect from retrofitState
         //when successful, take it.response: List<PostsJsonItem>?
         //convert to List<PostDto>

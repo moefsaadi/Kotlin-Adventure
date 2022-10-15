@@ -9,7 +9,7 @@ import com.example.kotlinmigration.database.dto.PostDto
 interface PostDao {
 
     @Insert
-    suspend fun addPost(vararg postsDto: PostDto)
+    suspend fun addPost(vararg postDto: PostDto)
 
     @Query("SELECT * FROM posts_table")
     suspend fun readAllData(): List<PostDto>
