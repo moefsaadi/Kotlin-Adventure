@@ -4,6 +4,9 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.example.kotlinmigration.database.Postdb
+import com.example.kotlinmigration.viewmodels.BASE_URL
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class App : Application() {
 
@@ -15,6 +18,7 @@ class App : Application() {
         private var instance: Application? = null
 
         lateinit var room: Postdb
+        lateinit var retrofit: Retrofit
 
         fun applicationContext() : Context {
             return instance!!.applicationContext
@@ -28,7 +32,11 @@ class App : Application() {
             Postdb.DATABASE_NAME
         ).build()
 
-        //add retrofit here and follow the pattern
+        retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        
 
         super.onCreate()
     }

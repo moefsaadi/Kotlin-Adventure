@@ -5,6 +5,8 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kotlinmigration.app.App
+import com.example.kotlinmigration.app.App.Companion.retrofit
 import com.example.kotlinmigration.database.Postdb
 import com.example.kotlinmigration.database.dto.PostDto
 import com.example.kotlinmigration.models.API.PostsJsonItem
@@ -38,10 +40,6 @@ class MainViewModel: ViewModel() {
     fun initRetrofit() {
 
         viewModelScope.launch (Dispatchers.IO) {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
 
             val serviceApi = retrofit.create(ServiceAPI::class.java)
 
