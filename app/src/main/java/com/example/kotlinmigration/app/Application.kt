@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.example.kotlinmigration.database.Postdb
+import com.example.kotlinmigration.database.dao.PostDao
 import com.example.kotlinmigration.viewmodels.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -36,7 +37,6 @@ class App : Application() {
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
 
         super.onCreate()
     }

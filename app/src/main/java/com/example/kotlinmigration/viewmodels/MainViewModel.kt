@@ -96,7 +96,7 @@ class MainViewModel: ViewModel() {
 
             }
 
-           PostDao.addPost(dtoList) //unreachable code? tf? also, why is it not recognizing .addPost??, also did i convert to List<PostDto> correct above?
+            PostDao.addPost() //unreachable code? tf? also, why is it not recognizing .addPost??, also did i convert to List<PostDto> correct above?
 
 
 
