@@ -13,7 +13,7 @@ interface PostDao {
 
     @Query("SELECT * FROM posts_table")
     suspend fun readAllData(): List<PostDto>
-    
+
     @Query("DELETE FROM posts_table")
     suspend fun deleteAllData(): List<PostDto>
 }
