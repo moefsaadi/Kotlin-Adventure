@@ -45,7 +45,6 @@ class MainViewModel: ViewModel() {
             val serviceApi = retrofit.create(ServiceAPI::class.java)
 
             val call = serviceApi.getPosts()
-
             _retrofitState.emit(RetrofitEvent.Running)
 
             call.enqueue(object : Callback<List<PostsJsonItem>> {
@@ -71,8 +70,9 @@ class MainViewModel: ViewModel() {
     private fun insertDataToDatabase(){
 
         viewModelScope.launch(Dispatchers.IO){
-            var dtoList: List<PostDto>
+
             _retrofitState.collect(){
+
                 when(it)
                 {
 
@@ -80,7 +80,7 @@ class MainViewModel: ViewModel() {
                         if(it.response != null){
                             for (item in it.response)
                             {
-                             dtoList = listOf(PostDto(
+                             listOf(PostDto(
                                     Body = item.body,
                                     ID = item.id,
                                     UserID = item.userId,
@@ -92,13 +92,13 @@ class MainViewModel: ViewModel() {
                     is RetrofitEvent.Failed -> {}
                     RetrofitEvent.Idle -> {}
                     RetrofitEvent.Running -> {}
+
+
                 }
 
+               App.room.postDao().addPost()
+
             }
-
-            PostDao.addPost(dtoList) //unreachable code? tf? also, why is it not recognizing .addPost??, also did i convert to List<PostDto> correct above?
-
-
 
         }
 
@@ -125,6 +125,10 @@ class MainViewModel: ViewModel() {
         //we're gonna need a second function called, readFromDB, that mainActivity can call like
         //viewmodel.readFromDB, this may need to return a flow
 
+
+    }
+
+    private fun readFromDb(){
 
     }
 }
