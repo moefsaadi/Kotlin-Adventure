@@ -10,6 +10,7 @@ import com.example.kotlinmigration.app.App.Companion.retrofit
 import com.example.kotlinmigration.database.Postdb
 import com.example.kotlinmigration.database.dao.PostDao
 import com.example.kotlinmigration.database.dto.PostDto
+import com.example.kotlinmigration.models.API.PostsJson
 import com.example.kotlinmigration.models.API.PostsJsonItem
 import com.example.kotlinmigration.models.API.ServiceAPI
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +39,7 @@ class MainViewModel: ViewModel() {
     val retrofitState: StateFlow<RetrofitEvent> = _retrofitState
 
 
-    fun initRetrofit() {
+    fun makeApiCall() {
 
         viewModelScope.launch (Dispatchers.IO) {
 
@@ -71,7 +72,13 @@ class MainViewModel: ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO){
 
-            _retrofitState.collect(){
+
+
+
+
+
+
+            /*_retrofitState.collect(){
 
                 when(it)
                 {
@@ -88,15 +95,16 @@ class MainViewModel: ViewModel() {
                                 ))
                             }
                         }
+
+                        App.room.postDao().addPost()
                     }
                     is RetrofitEvent.Failed -> {}
                     RetrofitEvent.Idle -> {}
                     RetrofitEvent.Running -> {}
 
 
-                }
+                }*/
 
-               App.room.postDao().addPost()
 
             }
 
@@ -131,4 +139,3 @@ class MainViewModel: ViewModel() {
     private fun readFromDb(){
 
     }
-}

@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.example.kotlinmigration.database.dao.PostDao
+import com.example.kotlinmigration.database.dto.PostDto
 import com.example.kotlinmigration.models.API.PostsJsonItem
 
 @Database(
     entities = [
-        PostsJsonItem::class,
+        PostDto::class,
     ],
-    version = 1
+    version = 2
 )
 
 abstract class Postdb : RoomDatabase()
@@ -21,24 +22,6 @@ abstract class Postdb : RoomDatabase()
 
         const val DATABASE_NAME = "my-database"
 
-        @Volatile
-        private var INSTANCE: Postdb? = null
 
-        fun getDatabase(context: Context): Postdb{
-            val tempInstance = INSTANCE
-            if(tempInstance !=null){
-                return tempInstance
-            }
-
-            synchronized(this){
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    Postdb::class.java,
-                    DATABASE_NAME
-                ).build()
-                INSTANCE = instance
-                return instance
-            }
-        }
     }
 }

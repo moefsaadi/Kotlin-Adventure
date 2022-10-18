@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kotlinmigration.app.App
+import com.example.kotlinmigration.database.dao.PostDao
 import com.example.kotlinmigration.database.dto.PostDto
 import com.example.kotlinmigration.databinding.ActivityMainBinding
 import com.example.kotlinmigration.models.API.PostsJsonItem
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             binding.img.visibility = View.INVISIBLE
             binding.developed.visibility = View.INVISIBLE
 
-            viewModel.initRetrofit()
+            viewModel.makeApiCall()
             observeRetrofitState()
         }
     }
@@ -56,7 +58,13 @@ class MainActivity : AppCompatActivity() {
                         {
                             binding.progress.visibility = View.INVISIBLE
                             binding.recyclerView.adapter = MyAdapter(it.response)
+
+                            it.response.forEach(){
+                                App.room.postDao().addPost()
+                            }
                         }
+
+
                     }
                     is MainViewModel.RetrofitEvent.Failed -> {
                         val text = "Failure: ${it.msg}"
