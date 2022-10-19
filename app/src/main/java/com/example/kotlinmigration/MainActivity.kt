@@ -59,7 +59,10 @@ class MainActivity : AppCompatActivity() {
                             binding.progress.visibility = View.INVISIBLE
                             binding.recyclerView.adapter = MyAdapter(it.response)
 
+                            viewModel.insertDataToDatabase(it.response)
+
                         }
+
 
                     }
                     is MainViewModel.RetrofitEvent.Failed -> {

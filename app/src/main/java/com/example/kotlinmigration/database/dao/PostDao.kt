@@ -13,7 +13,7 @@ interface PostDao {
     suspend fun addPost(vararg postDto: PostDto)
 
     @Query("SELECT * FROM posts_table")
-    fun readAllData(): Flow<List<PostDto>> //Removed "suspend" not sure if i should
+    suspend fun readAllData(): List<PostDto>
 
     @Query("DELETE FROM posts_table")
     suspend fun deleteAllData()
