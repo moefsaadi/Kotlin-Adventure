@@ -8,14 +8,4 @@ data class PostsJsonItem(
     val title: String,
     val userId: Int
 
-){
-    fun toPostDto(){
-        PostDto(
-            Body = body,
-            ID = id,
-            Title = title,
-            UserID = userId
-        )
-    }
-
-}
+)

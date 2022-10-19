@@ -28,11 +28,11 @@ const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
 class MainViewModel: ViewModel() {
 
-    sealed class RetrofitEvent{
-        object Idle: RetrofitEvent()
-        object Running: RetrofitEvent()
-        data class Successful(val response: List<PostsJsonItem>?): RetrofitEvent()
-        data class Failed(val msg: String?) :RetrofitEvent()
+    sealed class RetrofitEvent {
+        object Idle : RetrofitEvent()
+        object Running : RetrofitEvent()
+        data class Successful(val response: List<PostsJsonItem>?) : RetrofitEvent()
+        data class Failed(val msg: String?) : RetrofitEvent()
     }
 
     private val _retrofitState = MutableStateFlow<RetrofitEvent>(RetrofitEvent.Idle)
@@ -41,7 +41,7 @@ class MainViewModel: ViewModel() {
 
     fun makeApiCall() {
 
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
 
             val serviceApi = retrofit.create(ServiceAPI::class.java)
 
@@ -59,6 +59,10 @@ class MainViewModel: ViewModel() {
                         return
                     }
                     _retrofitState.tryEmit(RetrofitEvent.Successful(response.body()))
+
+                    insertDataToDatabase()
+
+
                 }
 
                 override fun onFailure(call: Call<List<PostsJsonItem>>, t: Throwable) {
@@ -68,42 +72,36 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    private fun insertDataToDatabase(){
+    fun insertDataToDatabase() {
 
-        viewModelScope.launch(Dispatchers.IO){
-
-
+        viewModelScope.launch(Dispatchers.IO) {
 
 
+            _retrofitState.collect() {
 
-
-
-            /*_retrofitState.collect(){
-
-                when(it)
-                {
+                when (it) {
 
                     is RetrofitEvent.Successful -> {
-                        if(it.response != null){
-                            for (item in it.response)
-                            {
-                             listOf(PostDto(
-                                    Body = item.body,
-                                    ID = item.id,
-                                    UserID = item.userId,
-                                    Title = item.title
-                                ))
+                        if (it.response != null) {
+                            for (item in it.response) {
+                                    val convertedData = PostDto(
+                                        Body = item.body,
+                                        ID = item.id,
+                                        UserID = item.userId,
+                                        Title = item.title
+                                    )
+
+                                App.room.postDao().addPost(convertedData)
                             }
                         }
 
-                        App.room.postDao().addPost()
                     }
                     is RetrofitEvent.Failed -> {}
                     RetrofitEvent.Idle -> {}
                     RetrofitEvent.Running -> {}
 
 
-                }*/
+                }
 
 
             }
@@ -136,6 +134,4 @@ class MainViewModel: ViewModel() {
 
     }
 
-    private fun readFromDb(){
-
-    }
+}

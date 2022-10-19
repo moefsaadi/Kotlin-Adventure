@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
 
-
                     }
                     is MainViewModel.RetrofitEvent.Failed -> {
                         val text = "Failure: ${it.msg}"
