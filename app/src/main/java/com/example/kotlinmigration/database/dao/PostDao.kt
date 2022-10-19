@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.kotlinmigration.database.dto.PostDto
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PostDao {
@@ -12,7 +13,7 @@ interface PostDao {
     suspend fun addPost(vararg postDto: PostDto)
 
     @Query("SELECT * FROM posts_table")
-    suspend fun readAllData(): List<PostDto>
+    fun readAllData(): Flow<List<PostDto>> //Removed "suspend" not sure if i should
 
     @Query("DELETE FROM posts_table")
     suspend fun deleteAllData()

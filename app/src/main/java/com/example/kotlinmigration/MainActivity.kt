@@ -59,9 +59,6 @@ class MainActivity : AppCompatActivity() {
                             binding.progress.visibility = View.INVISIBLE
                             binding.recyclerView.adapter = MyAdapter(it.response)
 
-                            it.response.forEach(){
-                                App.room.postDao().addPost()
-                            }
                         }
 
                     }

@@ -5,6 +5,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.kotlinmigration.app.App
 import com.example.kotlinmigration.app.App.Companion.retrofit
 import com.example.kotlinmigration.database.Postdb
@@ -60,7 +61,7 @@ class MainViewModel: ViewModel() {
                     }
                     _retrofitState.tryEmit(RetrofitEvent.Successful(response.body()))
 
-                    insertDataToDatabase()
+                    insertDataToDatabase() //insert API data into room
 
 
                 }
@@ -108,30 +109,60 @@ class MainViewModel: ViewModel() {
 
         }
 
-        //collect from retrofitState
-        //when successful, take it.response: List<PostsJsonItem>?
-        //convert to List<PostDto>
-        /*
-                  for(item in it.response)
-                            {
-                                PostDto(
-                                    Body = item.body,
-                                    ID = item.id
-                                )
-
-                            }
-         */
-        //call PostDao.add with that list
-        //ignore other states
+    }
 
 
-        //UNRELATED TO THIS FN
-        //we need some way to delete PostDtos from DB
+    fun deleteData(){
 
-        //we're gonna need a second function called, readFromDB, that mainActivity can call like
-        //viewmodel.readFromDB, this may need to return a flow
+        viewModelScope.launch(Dispatchers.IO) {
+
+            App.room.postDao().deleteAllData()
+
+        }
+    }
+
+    fun readData(){
+
+        viewModelScope.launch(Dispatchers.IO) {
 
 
+            //checking if PostDto is populated by observing a flow.. had to make readAllData() not a suspend fnc. not sure if correct.
+            App.room.postDao().readAllData().collect(){
+
+                if(it.isNotEmpty()){
+                    //insert code here after adding toolbar to populate new (activity?) with data
+                }
+            }
+        }
     }
 
 }
+
+
+
+
+
+
+
+//collect from retrofitState
+//when successful, take it.response: List<PostsJsonItem>?
+//convert to List<PostDto>
+/*
+          for(item in it.response)
+                    {
+                        PostDto(
+                            Body = item.body,
+                            ID = item.id
+                        )
+
+                    }
+ */
+//call PostDao.add with that list
+//ignore other states
+
+
+//UNRELATED TO THIS FN
+//we need some way to delete PostDtos from DB
+
+//we're gonna need a second function called, readFromDB, that mainActivity can call like
+//viewmodel.readFromDB, this may need to return a flow
