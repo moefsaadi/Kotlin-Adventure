@@ -3,45 +3,52 @@ package com.example.kotlinmigration.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kotlinmigration.app.App
+import com.example.kotlinmigration.app.App.Companion.retrofit
+import com.example.kotlinmigration.database.dto.PostDto
 import com.example.kotlinmigration.models.API.PostsJsonItem
 import com.example.kotlinmigration.models.API.ServiceAPI
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
 class MainViewModel: ViewModel() {
 
-    sealed class RetrofitEvent{
-        object Idle: RetrofitEvent()
-        object Running: RetrofitEvent()
-        data class Successful(val response: List<PostsJsonItem>?): RetrofitEvent()
-        data class Failed(val msg: String?) :RetrofitEvent()
+    sealed class RetrofitEvent {
+        object Idle : RetrofitEvent()
+        object Running : RetrofitEvent()
+        data class Successful(val response: List<PostsJsonItem>?) : RetrofitEvent()
+        data class Failed(val msg: String?) : RetrofitEvent()
     }
 
+    sealed class DatabaseEvent {
+        data class SuccessfulRead(val data: List<PostDto>) : DatabaseEvent()
+    }
+
+
+    private val _databaseFlow = MutableSharedFlow<DatabaseEvent>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val databaseFlow: SharedFlow<DatabaseEvent> = _databaseFlow
     private val _retrofitState = MutableStateFlow<RetrofitEvent>(RetrofitEvent.Idle)
     val retrofitState: StateFlow<RetrofitEvent> = _retrofitState
 
 
-    fun initRetrofit() {
+    fun makeApiCall() {
 
-        viewModelScope.launch (Dispatchers.IO) {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
+        viewModelScope.launch(Dispatchers.IO) {
 
             val serviceApi = retrofit.create(ServiceAPI::class.java)
 
             val call = serviceApi.getPosts()
-
             _retrofitState.emit(RetrofitEvent.Running)
 
             call.enqueue(object : Callback<List<PostsJsonItem>> {
@@ -54,8 +61,8 @@ class MainViewModel: ViewModel() {
                         _retrofitState.tryEmit(RetrofitEvent.Failed(codeStr))
                         return
                     }
-
                     _retrofitState.tryEmit(RetrofitEvent.Successful(response.body()))
+                    
                 }
 
                 override fun onFailure(call: Call<List<PostsJsonItem>>, t: Throwable) {
@@ -64,4 +71,72 @@ class MainViewModel: ViewModel() {
             })
         }
     }
+
+    fun insertDataToDatabase(data: List<PostsJsonItem>) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+                            for (item in data) {
+                                    val convertedData = PostDto(
+                                        Body = item.body,
+                                        ID = item.id,
+                                        UserID = item.userId,
+                                        Title = item.title
+                                    )
+                                App.room.postDao().addPost(convertedData)
+                            }
+
+        }
+    }
+
+
+    fun deleteData(){
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            App.room.postDao().deleteAllData()
+
+        }
+    }
+
+    fun readData(){
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val postDtoList = App.room.postDao().readAllData()
+            _databaseFlow.emit(DatabaseEvent.SuccessfulRead(postDtoList))
+
+
+        }
+    }
+
 }
+
+
+
+
+
+
+
+//collect from retrofitState
+//when successful, take it.response: List<PostsJsonItem>?
+//convert to List<PostDto>
+/*
+          for(item in it.response)
+                    {
+                        PostDto(
+                            Body = item.body,
+                            ID = item.id
+                        )
+
+                    }
+ */
+//call PostDao.add with that list
+//ignore other states
+
+
+//UNRELATED TO THIS FN
+//we need some way to delete PostDtos from DB
+
+//we're gonna need a second function called, readFromDB, that mainActivity can call like
+//viewmodel.readFromDB, this may need to return a flow
