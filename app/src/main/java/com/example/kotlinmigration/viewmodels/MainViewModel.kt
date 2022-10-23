@@ -62,7 +62,7 @@ class MainViewModel: ViewModel() {
                         return
                     }
                     _retrofitState.tryEmit(RetrofitEvent.Successful(response.body()))
-                    
+
                 }
 
                 override fun onFailure(call: Call<List<PostsJsonItem>>, t: Throwable) {
@@ -111,32 +111,3 @@ class MainViewModel: ViewModel() {
     }
 
 }
-
-
-
-
-
-
-
-//collect from retrofitState
-//when successful, take it.response: List<PostsJsonItem>?
-//convert to List<PostDto>
-/*
-          for(item in it.response)
-                    {
-                        PostDto(
-                            Body = item.body,
-                            ID = item.id
-                        )
-
-                    }
- */
-//call PostDao.add with that list
-//ignore other states
-
-
-//UNRELATED TO THIS FN
-//we need some way to delete PostDtos from DB
-
-//we're gonna need a second function called, readFromDB, that mainActivity can call like
-//viewmodel.readFromDB, this may need to return a flow
