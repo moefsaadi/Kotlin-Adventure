@@ -4,4 +4,10 @@
     android:layout_height="wrap_content"
     android:background="@color/teal_200">
 
+  <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="300dp"/>
+
+
 </androidx.appcompat.widget.Toolbar>

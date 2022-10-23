@@ -2,6 +2,8 @@ package com.example.kotlinmigration
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
@@ -44,6 +46,24 @@ class MainActivity : AppCompatActivity() {
             viewModel.makeApiCall()
             observeRetrofitState()
         }
+
+        val actionBar = supportActionBar
+
+        actionBar?.setDisplayShowCustomEnabled(true) //continue implementing from here
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.mymenu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menuRead -> Toast.makeText(this,"Pulling data from Room",Toast.LENGTH_SHORT).show()
+            R.id.menuDelete -> Toast.makeText(this,"Deleting data from Room",Toast.LENGTH_SHORT).show()
+            R.id.menuTheme -> Toast.makeText(this,"Switching themes!",Toast.LENGTH_SHORT).show()
+        }
+        return true
     }
 
     private fun observeRetrofitState() {
