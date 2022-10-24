@@ -2,6 +2,7 @@ package com.example.kotlinmigration
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -32,6 +33,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.progress.visibility = View.INVISIBLE
 
@@ -47,9 +50,12 @@ class MainActivity : AppCompatActivity() {
             observeRetrofitState()
         }
 
-        val actionBar = supportActionBar
 
-        actionBar?.setDisplayShowCustomEnabled(true) //continue implementing from here
+
+
+
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -59,9 +65,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.menuRead -> Toast.makeText(this,"Pulling data from Room",Toast.LENGTH_SHORT).show()
-            R.id.menuDelete -> Toast.makeText(this,"Deleting data from Room",Toast.LENGTH_SHORT).show()
-            R.id.menuTheme -> Toast.makeText(this,"Switching themes!",Toast.LENGTH_SHORT).show()
+            R.id.menuRead ->
+            {
+                Toast.makeText(this,"Pulling data from Room",Toast.LENGTH_SHORT).show()
+            }
+
+            R.id.menuDelete ->
+            {
+                Toast.makeText(this,"Deleting data from Room",Toast.LENGTH_SHORT).show()
+                viewModel.deleteData()
+            }
+            R.id.menuTheme ->
+            {
+                Toast.makeText(this,"Switching themes!",Toast.LENGTH_SHORT).show()
+            }
         }
         return true
     }
