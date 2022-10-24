@@ -13,10 +13,15 @@
         android:icon="@drawable/ic_baseline_delete_24"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/menuTheme"
-        android:title="Change Theme"
+        android:id="@+id/lightTheme"
+        android:title="Light Theme"
         android:icon="@drawable/ic_baseline_switch_left_24"
-        app:showAsAction="always"/>
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/darkTheme"
+        android:title="Dark Theme"
+        android:icon="@drawable/ic_baseline_switch_left_24"
+        app:showAsAction="never"/>
 
 
 

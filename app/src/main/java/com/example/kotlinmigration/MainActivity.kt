@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,11 +52,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
-
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -75,9 +71,16 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,"Deleting data from Room",Toast.LENGTH_SHORT).show()
                 viewModel.deleteData()
             }
-            R.id.menuTheme ->
+            R.id.lightTheme ->
             {
-                Toast.makeText(this,"Switching themes!",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"Switching to Light Theme!",Toast.LENGTH_SHORT).show()
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+
+            R.id.darkTheme ->
+            {
+                Toast.makeText(this,"Switching to Dark Theme!",Toast.LENGTH_SHORT).show()
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
         }
         return true
