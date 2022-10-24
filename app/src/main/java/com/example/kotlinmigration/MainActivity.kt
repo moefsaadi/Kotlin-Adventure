@@ -1,5 +1,7 @@
 package com.example.kotlinmigration
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,11 +30,21 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
+    var light = AppCompatDelegate.MODE_NIGHT_NO
+    var dark = AppCompatDelegate.MODE_NIGHT_YES
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val sp : SharedPreferences = App.applicationContext().getSharedPreferences("MySharedPref", MODE_PRIVATE)
+
+         //val theme = sp.getInt("light",dark)
+        val theme = sp.getInt("dark",light)
+        AppCompatDelegate.setDefaultNightMode(theme)
+
+
 
 
 
@@ -52,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -60,6 +73,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+      var editor =  App.sharedPreferences.edit()
+
         when(item.itemId){
             R.id.menuRead ->
             {
@@ -74,16 +90,29 @@ class MainActivity : AppCompatActivity() {
             R.id.lightTheme ->
             {
                 Toast.makeText(this,"Switching to Light Theme!",Toast.LENGTH_SHORT).show()
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                AppCompatDelegate.setDefaultNightMode(light)
+
+                //editor.putInt("light", light)
+
             }
 
             R.id.darkTheme ->
             {
                 Toast.makeText(this,"Switching to Dark Theme!",Toast.LENGTH_SHORT).show()
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                AppCompatDelegate.setDefaultNightMode(dark)
+
+                editor.putInt("dark", dark)
+                editor.apply()
+
             }
+
         }
+//        editor.commit()
+
         return true
+
+
+
     }
 
     private fun observeRetrofitState() {
@@ -112,5 +141,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun loadSharedPreferences(){
+
+
     }
 }
