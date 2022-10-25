@@ -1,5 +1,6 @@
 package com.example.kotlinmigration
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel : MainViewModel by viewModels()
     private val light = AppCompatDelegate.MODE_NIGHT_NO
     private val dark = AppCompatDelegate.MODE_NIGHT_YES
+    private val context = this
 
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             {
                 Toast.makeText(this,readTxt,Toast.LENGTH_SHORT).show()
 
-                intent = Intent(App.applicationContext(), ReadDataAdapter::class.java)
+                intent = Intent(context,ReadDataAdapter::class.java)
                 startActivity(intent)
 
             }
