@@ -1,10 +1,8 @@
 package com.example.kotlinmigration
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -13,18 +11,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinmigration.app.App
-import com.example.kotlinmigration.database.dao.PostDao
-import com.example.kotlinmigration.database.dto.PostDto
 import com.example.kotlinmigration.databinding.ActivityMainBinding
-import com.example.kotlinmigration.models.API.PostsJsonItem
-import com.example.kotlinmigration.models.API.ServiceAPI
 import com.example.kotlinmigration.viewmodels.MainViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit2.*
-import retrofit2.converter.gson.GsonConverterFactory
 
 const val KEY_NIGHT_MODE = "nightMode"
 
@@ -80,6 +70,10 @@ class MainActivity : AppCompatActivity() {
             R.id.menuRead ->
             {
                 Toast.makeText(this,readTxt,Toast.LENGTH_SHORT).show()
+
+                intent = Intent(App.applicationContext(), ReadDataAdapter::class.java)
+                startActivity(intent)
+
             }
             R.id.menuDelete ->
             {
