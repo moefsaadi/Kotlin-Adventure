@@ -26,32 +26,22 @@ import kotlinx.coroutines.launch
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
+const val KEY_NIGHT_MODE = "nightMode"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
-    var light = AppCompatDelegate.MODE_NIGHT_NO
-    var dark = AppCompatDelegate.MODE_NIGHT_YES
+    val light = AppCompatDelegate.MODE_NIGHT_NO
+    val dark = AppCompatDelegate.MODE_NIGHT_YES
+
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sp : SharedPreferences = App.applicationContext().getSharedPreferences("MySharedPref", MODE_PRIVATE)
-
-         //val theme = sp.getInt("light",dark)
-        val theme = sp.getInt("dark",light)
-
-        if(theme == 1){
-        AppCompatDelegate.setDefaultNightMode(theme)}
-        else{
-            AppCompatDelegate.setDefaultNightMode(light)
-        }
-
-
-
-
+        loadSharedPreferences()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.progress.visibility = View.INVISIBLE
@@ -79,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-      var editor =  App.sharedPreferences.edit()
+      val editor =  App.sharedPreferences.edit()
 
         when(item.itemId){
             R.id.menuRead ->
@@ -97,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,"Switching to Light Theme!",Toast.LENGTH_SHORT).show()
                 AppCompatDelegate.setDefaultNightMode(light)
 
-                editor.putInt("light", light)
+                editor.putInt(KEY_NIGHT_MODE, light)
                 editor.apply()
 
             }
@@ -107,18 +97,12 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,"Switching to Dark Theme!",Toast.LENGTH_SHORT).show()
                 AppCompatDelegate.setDefaultNightMode(dark)
 
-                editor.putInt("dark", dark)
+                editor.putInt(KEY_NIGHT_MODE, dark)
                 editor.apply()
-
             }
 
         }
-//        editor.commit()
-
         return true
-
-
-
     }
 
     private fun observeRetrofitState() {
@@ -151,6 +135,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadSharedPreferences(){
 
+        val sp = App.sharedPreferences
+        val theme = sp.getInt(KEY_NIGHT_MODE,light)
+        AppCompatDelegate.setDefaultNightMode(theme)
 
     }
 }
