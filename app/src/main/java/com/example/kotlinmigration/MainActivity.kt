@@ -1,7 +1,5 @@
 package com.example.kotlinmigration
 
-import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -15,7 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kotlinmigration.app.App
 import com.example.kotlinmigration.databinding.ActivityMainBinding
 import com.example.kotlinmigration.viewmodels.MainViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+
+
 
 const val KEY_NIGHT_MODE = "nightMode"
 
@@ -50,8 +52,6 @@ class MainActivity : AppCompatActivity() {
             observeRetrofitState()
         }
 
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -72,9 +72,7 @@ class MainActivity : AppCompatActivity() {
             R.id.menuRead ->
             {
                 Toast.makeText(this,readTxt,Toast.LENGTH_SHORT).show()
-
-                intent = Intent(context,ReadDataAdapter::class.java)
-                startActivity(intent)
+                observeRoomData()
 
             }
             R.id.menuDelete ->
@@ -100,6 +98,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return true
+    }
+
+    private fun observeRoomData(){
+        lifecycleScope.launch(Dispatchers.IO){
+            viewModel.databaseFlow.collect{
+                when(it){
+                    is MainViewModel.DatabaseEvent.SuccessfulRead -> {
+
+                        binding.recyclerView.adapter = MyAdapter()
+
+
+
+                    }
+                }
+            }
+        }
     }
 
     private fun observeRetrofitState() {
