@@ -42,7 +42,12 @@ class MainActivity : AppCompatActivity() {
 
          //val theme = sp.getInt("light",dark)
         val theme = sp.getInt("dark",light)
-        AppCompatDelegate.setDefaultNightMode(theme)
+
+        if(theme == 1){
+        AppCompatDelegate.setDefaultNightMode(theme)}
+        else{
+            AppCompatDelegate.setDefaultNightMode(light)
+        }
 
 
 
@@ -92,7 +97,8 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,"Switching to Light Theme!",Toast.LENGTH_SHORT).show()
                 AppCompatDelegate.setDefaultNightMode(light)
 
-                //editor.putInt("light", light)
+                editor.putInt("light", light)
+                editor.apply()
 
             }
 
