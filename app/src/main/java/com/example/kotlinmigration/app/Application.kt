@@ -43,7 +43,6 @@ class App : Application() {
 
         sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
 
-
         super.onCreate()
     }
 }

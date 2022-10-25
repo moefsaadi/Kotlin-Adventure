@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
-    val light = AppCompatDelegate.MODE_NIGHT_NO
-    val dark = AppCompatDelegate.MODE_NIGHT_YES
+    private val light = AppCompatDelegate.MODE_NIGHT_NO
+    private val dark = AppCompatDelegate.MODE_NIGHT_YES
 
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,38 +69,39 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-      val editor =  App.sharedPreferences.edit()
+        val readTxt = "Pulling data from Room"
+        val deleteTxt = "Deleting Data from Room"
+        val lightTxt = "Switching to Light Theme!"
+        val darkTxt = "Switching to Dark Theme!"
+
+        val editor =  App.sharedPreferences.edit()
 
         when(item.itemId){
             R.id.menuRead ->
             {
-                Toast.makeText(this,"Pulling data from Room",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,readTxt,Toast.LENGTH_SHORT).show()
             }
-
             R.id.menuDelete ->
             {
-                Toast.makeText(this,"Deleting data from Room",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,deleteTxt,Toast.LENGTH_SHORT).show()
                 viewModel.deleteData()
             }
             R.id.lightTheme ->
             {
-                Toast.makeText(this,"Switching to Light Theme!",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,lightTxt,Toast.LENGTH_SHORT).show()
                 AppCompatDelegate.setDefaultNightMode(light)
 
                 editor.putInt(KEY_NIGHT_MODE, light)
                 editor.apply()
-
             }
-
             R.id.darkTheme ->
             {
-                Toast.makeText(this,"Switching to Dark Theme!",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,darkTxt,Toast.LENGTH_SHORT).show()
                 AppCompatDelegate.setDefaultNightMode(dark)
 
                 editor.putInt(KEY_NIGHT_MODE, dark)
                 editor.apply()
             }
-
         }
         return true
     }
