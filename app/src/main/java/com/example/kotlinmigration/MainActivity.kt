@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kotlinmigration.app.App
+import com.example.kotlinmigration.database.SharedPreferences
 import com.example.kotlinmigration.databinding.ActivityMainBinding
 import com.example.kotlinmigration.viewmodels.MainViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel : MainViewModel by viewModels()
     private val light = AppCompatDelegate.MODE_NIGHT_NO
     private val dark = AppCompatDelegate.MODE_NIGHT_YES
-    private val context = this
-
+    val spclass = SharedPreferences()
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         loadSharedPreferences()
+
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.progress.visibility = View.INVISIBLE
@@ -66,7 +67,6 @@ class MainActivity : AppCompatActivity() {
         val lightTxt = "Switching to Light Theme!"
         val darkTxt = "Switching to Dark Theme!"
 
-        val editor =  App.sharedPreferences.edit()
 
         when(item.itemId){
             R.id.menuRead ->
@@ -85,16 +85,14 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,lightTxt,Toast.LENGTH_SHORT).show()
                 AppCompatDelegate.setDefaultNightMode(light)
 
-                editor.putInt(KEY_NIGHT_MODE, light)
-                editor.apply()
+                spclass.setInt(KEY_NIGHT_MODE, light)
             }
             R.id.darkTheme ->
             {
                 Toast.makeText(this,darkTxt,Toast.LENGTH_SHORT).show()
                 AppCompatDelegate.setDefaultNightMode(dark)
 
-                editor.putInt(KEY_NIGHT_MODE, dark)
-                editor.apply()
+                spclass.setInt(KEY_NIGHT_MODE, dark)
             }
         }
         return true
@@ -106,7 +104,7 @@ class MainActivity : AppCompatActivity() {
                 when(it){
                     is MainViewModel.DatabaseEvent.SuccessfulRead -> {
 
-                        binding.recyclerView.adapter = MyAdapter()
+                        //binding.recyclerView.adapter = MyAdapter()
 
 
 
@@ -130,10 +128,7 @@ class MainActivity : AppCompatActivity() {
                             binding.recyclerView.adapter = MyAdapter(it.response)
 
                             viewModel.insertDataToDatabase(it.response)
-
                         }
-
-
                     }
                     is MainViewModel.RetrofitEvent.Failed -> {
                         val text = "Failure: ${it.msg}"
@@ -144,11 +139,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun loadSharedPreferences(){
-
-        val sp = App.sharedPreferences
-        val theme = sp.getInt(KEY_NIGHT_MODE,light)
-        AppCompatDelegate.setDefaultNightMode(theme)
-
+        spclass.getInt(KEY_NIGHT_MODE)
     }
+
 }
