@@ -89,19 +89,22 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    fun convertRoomData(data: List<PostDto>){
+    fun convertRoomData(data: List<PostDto>): List<PostsJsonItem>{
 
+        val returnList = mutableListOf<PostsJsonItem>()
         viewModelScope.launch(Dispatchers.IO){
 
             for(item in data){
-                    PostsJsonItem(
+                    returnList.add(PostsJsonItem(
                     body = item.Body,
                     id = item.ID,
                     userId = item.UserID,
                     title = item.Title
-                )
+                ))
             }
         }
+
+        return returnList
     }
 
 
@@ -120,9 +123,6 @@ class MainViewModel: ViewModel() {
 
             val postDtoList = App.room.postDao().readAllData()
             _databaseFlow.emit(DatabaseEvent.SuccessfulRead(postDtoList))
-
-            convertRoomData(postDtoList)
-
 
         }
     }

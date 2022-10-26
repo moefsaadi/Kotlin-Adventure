@@ -104,9 +104,13 @@ class MainActivity : AppCompatActivity() {
                 when(it){
                     is MainViewModel.DatabaseEvent.SuccessfulRead -> {
 
-                        //binding.recyclerView.adapter = MyAdapter()
+                        if(it.data.isNotEmpty()){
 
+                            val pulledData = viewModel.convertRoomData(it.data)
+                            viewModel.readData()
+                            binding.recyclerView.adapter = MyAdapter(pulledData)
 
+                        }
 
                     }
                 }
