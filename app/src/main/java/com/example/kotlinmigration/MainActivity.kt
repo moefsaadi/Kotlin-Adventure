@@ -71,9 +71,7 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId){
             R.id.menuRead ->
             {
-                Toast.makeText(this,readTxt,Toast.LENGTH_SHORT).show()
                 observeRoomData()
-
             }
             R.id.menuDelete ->
             {
@@ -110,6 +108,9 @@ class MainActivity : AppCompatActivity() {
                             viewModel.readData()
                             binding.recyclerView.adapter = MyAdapter(pulledData)
 
+                        } else {
+                            val text = "Database Empty! Make API Call"
+                            Toast.makeText(applicationContext,text,Toast.LENGTH_SHORT).show()
                         }
 
                     }
