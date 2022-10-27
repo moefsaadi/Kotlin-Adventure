@@ -1,5 +1,6 @@
 package com.example.kotlinmigration
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel : MainViewModel by viewModels()
     private val light = AppCompatDelegate.MODE_NIGHT_NO
     private val dark = AppCompatDelegate.MODE_NIGHT_YES
-    val spclass = SharedPreferences()
+    private val spclass = SharedPreferences()
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +63,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        val readTxt = "Pulling data from Room"
         val deleteTxt = "Deleting Data from Room"
         val lightTxt = "Switching to Light Theme!"
         val darkTxt = "Switching to Dark Theme!"
@@ -91,6 +91,9 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(dark)
 
                 spclass.setInt(KEY_NIGHT_MODE, dark)
+
+                //binding.developed.setTextColor(Color.WHITE)
+                //binding.mainTitle.setTextColor(Color.WHITE)
             }
         }
         return true
@@ -102,11 +105,14 @@ class MainActivity : AppCompatActivity() {
                 when(it){
                     is MainViewModel.DatabaseEvent.SuccessfulRead -> {
 
-                        if(it.data.isNotEmpty()){
+                        if(it.data.isNotEmpty()){ 
 
+                            val text = "Pulling Data from Room Database!"
                             val pulledData = viewModel.convertRoomData(it.data)
-                            viewModel.readData()
+                            //viewModel.readData()
                             binding.recyclerView.adapter = MyAdapter(pulledData)
+
+                            Toast.makeText(applicationContext,text,Toast.LENGTH_SHORT).show()
 
                         } else {
                             val text = "Database Empty! Make API Call"
