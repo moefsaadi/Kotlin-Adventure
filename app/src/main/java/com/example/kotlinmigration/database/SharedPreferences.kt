@@ -6,21 +6,19 @@ import com.example.kotlinmigration.app.App
 class SharedPreferences() {
 
     var prefs = App.sharedPreferences
+    val editor= prefs.edit()
 
     fun setInt(key:String, value:Int){
 
-        prefs = App.sharedPreferences
-        val editor= prefs.edit()
         editor.putInt(key,value)
         editor.apply()
 
     }
 
-    fun getInt(key: String) {
+    fun getInt(key: String): Int {
 
-        prefs = App.sharedPreferences
         val theme = prefs.getInt(key,0)
-        AppCompatDelegate.setDefaultNightMode(theme)
+        return theme
 
     }
 

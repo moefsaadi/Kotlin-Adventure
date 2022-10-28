@@ -1,6 +1,5 @@
 package com.example.kotlinmigration
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -11,14 +10,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.kotlinmigration.app.App
 import com.example.kotlinmigration.database.SharedPreferences
 import com.example.kotlinmigration.databinding.ActivityMainBinding
 import com.example.kotlinmigration.viewmodels.MainViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-
 
 
 const val KEY_NIGHT_MODE = "nightMode"
@@ -63,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        val deleteTxt = "Deleting Data from Room"
+        val deleteTxt = "Deleted Data from Room"
         val lightTxt = "Switching to Light Theme!"
         val darkTxt = "Switching to Dark Theme!"
 
@@ -91,26 +86,29 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(dark)
 
                 spclass.setInt(KEY_NIGHT_MODE, dark)
-
-                //binding.developed.setTextColor(Color.WHITE)
-                //binding.mainTitle.setTextColor(Color.WHITE)
             }
         }
         return true
     }
 
     private fun observeRoomData(){
-        lifecycleScope.launch(Dispatchers.IO){
+
+        viewModel.readData()
+
+        lifecycleScope.launch{
             viewModel.databaseFlow.collect{
                 when(it){
                     is MainViewModel.DatabaseEvent.SuccessfulRead -> {
 
-                        if(it.data.isNotEmpty()){ 
+                        if(it.data.isNotEmpty()){
 
                             val text = "Pulling Data from Room Database!"
                             val pulledData = viewModel.convertRoomData(it.data)
-                            //viewModel.readData()
                             binding.recyclerView.adapter = MyAdapter(pulledData)
+                            binding.button.visibility = View.INVISIBLE
+                            binding.mainTitle.visibility = View.INVISIBLE
+                            binding.img.visibility = View.INVISIBLE
+                            binding.developed.visibility = View.INVISIBLE
 
                             Toast.makeText(applicationContext,text,Toast.LENGTH_SHORT).show()
 
@@ -150,9 +148,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun loadSharedPreferences(){
-        spclass.getInt(KEY_NIGHT_MODE)
+        val theme = spclass.getInt(KEY_NIGHT_MODE)
+        AppCompatDelegate.setDefaultNightMode(theme)
     }
-
 }

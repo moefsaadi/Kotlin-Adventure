@@ -85,7 +85,6 @@ class MainViewModel: ViewModel() {
                                     )
                                 App.room.postDao().addPost(convertedData)
                             }
-
         }
     }
 
@@ -106,7 +105,6 @@ class MainViewModel: ViewModel() {
 
         return returnList
     }
-
 
     fun deleteData(){
 
